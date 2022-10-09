@@ -2,31 +2,37 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import './App.css'
 
+import { signupUser, selectAuthState } from './redux/auth.slice'
+import { User } from './types/user.types';
+
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState, AppDispatch } from './redux/store';
+
 function App() {
-  const [count, setCount] = useState(0)
+
+  const dispatch = useDispatch<AppDispatch>()
+  const user = useSelector((state: RootState) => selectAuthState(state))
+
+
+  const [name, setName] = useState("")
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+
+  const registerUser = () => {
+    dispatch(signupUser({ name, email, password }))
+  }
 
   return (
     <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <h1>{
+        user.user ? 'User is registered' : 'Login To User'
+      } </h1>
+      <div className="flex">
+        <input type="text" value={email} onChange={(e) => setEmail(e.target.value)} placeholder='Enter Email' />
+        <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder='Enter Name' />
+        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder='Enter Password' />
+        <button onClick={registerUser}>Login</button>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </div>
   )
 }
